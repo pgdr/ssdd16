@@ -521,7 +521,12 @@ class GraphicsObject:
             self.canvas.move(self.id, x, y)
             if canvas.autoflush:
                 _root.update()
-           
+
+    def getFill(self):
+        if 'fill' in self.config:
+           return self.config['fill']
+        print('No such property: ', self.config)
+        return None
     def _reconfig(self, option, setting):
         # Internal method for changing configuration of the object
         # Raises an error if the option does not exist in the config
