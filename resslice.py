@@ -5,7 +5,10 @@ def soil(swat_kw, a_idx):
     if a_idx < 0:
         return 0
     swat = swat_kw[a_idx]
-    return 1 - abs(0.7 - swat)
+    val = 1.0 - abs(0.7 - swat)
+    if swat > 0.7:
+        val /= 2
+    return val
 
 def getwall(i):
     gridfile = 'norne/NORNE_ATW2013.EGRID'
@@ -16,7 +19,7 @@ def getwall(i):
     init = EclFile(initfile)
     rest = EclFile(restfile)
      
-    swat_kw = rest.iget_kw('SWAT', 0)[0]
+    swat_kw = rest.iget_kw('SWAT', 0)[5]
     nx,ny,nz = grid.getNX(),grid.getNY(),grid.getNZ()
      
     wall = []
