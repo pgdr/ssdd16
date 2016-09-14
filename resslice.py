@@ -21,7 +21,7 @@ def getwall(i):
      
     swat_kw = rest.iget_kw('SWAT', 0)[5]
     nx,ny,nz = grid.getNX(),grid.getNY(),grid.getNZ()
-     
+
     wall = []
     for j in range(ny):
         c = []
