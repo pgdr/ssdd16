@@ -1,7 +1,5 @@
-from __future__ import print_function
-import sys
-
-def zeroes(mx):
+def _zeroes(mx):
+    """Constructs a zero matrix of shape same as mx"""
     n = len(mx)
     m = len(mx[0])
 
@@ -12,23 +10,25 @@ def zeroes(mx):
             dp[k].append(0)
     return dp
 
-def get(tab, i,k,m,n):
+def _get(tab, i,k,m,n,ret=0):
+    """Get an element of matrix tab, or val(0) if out of bounds indices"""
     if 0 <= i < m and 0 <= k < n:
         return tab[k][i]
-    return 0
+    return ret
 
 
-def dodp(mx):
-    dpt = zeroes(mx)
+def dynamicProgramming(mx):
+    """Computes optimum value using dynamic programming.  Returns solution path."""
+    dpt = _zeroes(mx)
     n = len(mx)
     m = len(mx[0])
     
     for i in range(m-1,-1,-1):
         for k in range(n):
-            val = get(mx, i,k,m,n)
-            dp_val = max(get(dpt,i+1, k-1,m,n),
-                         get(dpt,i+1, k,m,n),
-                         get(dpt,i+1, k+1,m,n))
+            val = _get(mx, i,k,m,n)
+            dp_val = max(_get(dpt,i+1, k-1,m,n),
+                         _get(dpt,i+1, k,m,n),
+                         _get(dpt,i+1, k+1,m,n))
             dpt[k][i] = val + dp_val
     snake = []
     for i in range(m):
@@ -41,22 +41,3 @@ def dodp(mx):
                    c_k_idx = k
         snake.append(c_k_idx)
     return snake
-
-
-def main():
-    if len(sys.argv) != 2:
-        print('dp file')
-        exit(1)
-     
-    mx = []
-    with open(sys.argv[1], 'r') as f:
-        for l in f:
-            l = l.strip()
-            if len(l) > 0:
-                mx.append(map(float, l.split()))
-     
-    snake = dodp(mx)
-    print(snake)
-
-
-# main()

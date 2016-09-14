@@ -3,7 +3,7 @@ import sys
 import colorsys
 from graphics import *
 from time import sleep
-import dpapi
+from dpapi import dynamicProgramming
 
 def pseudocolor(val, minval, maxval):
     h = (float(val-minval) / (maxval-minval)) * 120
@@ -73,7 +73,7 @@ def drawSnake(win, snake, sprite=None):
 
 def main():
     global m,n,mx,height,width,size
-    snake = dpapi.dodp(mx)
+    snake = dynamicProgramming(mx)
     win = GraphWin("Snakewell", width=width*size, height=height*size)
     for i in range(m):
         for k in range(n):
