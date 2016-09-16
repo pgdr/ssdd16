@@ -1,15 +1,7 @@
 from __future__ import print_function
 from graphics import *
 from time import sleep, time
-import sys
 from random import random, randint
-
-mx = []
-with open(sys.argv[1], 'r') as f:
-    for l in f:
-        l = l.strip()
-        if len(l) > 0:
-            mx.append(map(float, l.split()))
 
 # Should be a game property object
 height = 20
