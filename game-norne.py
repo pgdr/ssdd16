@@ -3,6 +3,7 @@ from graphics import *
 from time import sleep, time
 import sys
 from random import random, randint
+from math import sqrt
 import colorsys
 
 import resslice
@@ -12,7 +13,7 @@ height = 22 # norne happens to be 22 high
 width  = 40
 size   = 40
 
-TIMELIMIT = 6000
+TIMELIMIT = 100
 TIMEDELAY = 0.01
 LENGTH_GOAL = 10
 
@@ -44,10 +45,8 @@ def column(size):
         mx = resslice.getwall(slice_idx)
         wall = transpose(mx)
         slice_idx += 1
-        print(slice_idx)
     col = wall[-1]
     wall = wall[:-1]
-    print(len(wall))
     return col
         
         
@@ -139,7 +138,7 @@ def gameLoop(win):
             current += 1
         if k == 'h':
             grow = True
-            print('hit')
+            print('cheat')
         if k == 'l':
             print('Snake: %s' % str(snake))
 

@@ -18,7 +18,8 @@ def _get(tab, i,k,m,n,ret=0):
 
 
 def dynamicProgramming(mx):
-    """Computes optimum value using dynamic programming.  Returns solution path."""
+    """Computes optimum value using dynamic programming.
+       Returns solution path."""
     dpt = _zeroes(mx)
     n = len(mx)
     m = len(mx[0])

@@ -6,7 +6,7 @@ from random import random, randint
 # Should be a game property object
 height = 20
 width  = 50
-size   = 20
+size   = 40
 
 TIMELIMIT = 60
 TIMEDELAY = 0.1

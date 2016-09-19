@@ -26,7 +26,7 @@ m = len(mx[0])
 
 height = n
 width  = m
-size   = 20
+size   = 30
 
 def thickLine(p1,p2):
     global size
