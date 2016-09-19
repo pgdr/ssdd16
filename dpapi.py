@@ -40,4 +40,5 @@ def dynamicProgramming(mx):
                    cbest = dpt[k][i]
                    c_k_idx = k
         snake.append(c_k_idx)
+    print('OPT: %.2f' % dpt[snake[0]][0])
     return snake

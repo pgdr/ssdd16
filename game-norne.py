@@ -14,7 +14,7 @@ size   = 40
 
 TIMELIMIT = 6000
 TIMEDELAY = 0.01
-
+LENGTH_GOAL = 10
 
 
 ##############################
@@ -100,11 +100,11 @@ def drawSnake(win, snake, sprite):
     return sprite
 
 def gameLoop(win):
-    global height, width, size, TIMELIMIT, TIMEDELAY
+    global height, width, size, TIMELIMIT, TIMEDELAY, LENGTH_GOAL
     scoreLabel = Text(Point(2*size,size), "Score: 1")
-    scoreLabel.draw(win)
     score = 0
     timeLabel = Text(Point(2*size,2*size+10), "")
+    scoreLabel.draw(win)
     timeLabel.draw(win)
 
     snake = [(width/2-2, height/2),(width/2-1, height/2),(width/2, height/2)]
@@ -123,21 +123,20 @@ def gameLoop(win):
             grid[i].append(r)
 
     while True:
-        scoreLabel.setText('Score: %.2f' % score)
-        timeLabel.setText('%d' % round(TIMELIMIT - (time() - playtime)))
         sprite = drawSnake(win, snake, sprite)
         k = win.checkKey()
         if score/10.0 > len(snake):
             grow = True
+        if score/10.0 >= LENGTH_GOAL:
+            print('Score: %.2f' % (TIMELIMIT - (time() - playtime)))
+            return True
         if k == 'q':
             print('quit')
-            break
+            return False
         if k == 'w':
-            print('up')
             current -= 1
         if k == 's':
             current += 1
-            print('dw')
         if k == 'h':
             grow = True
             print('hit')
@@ -146,19 +145,23 @@ def gameLoop(win):
 
         
         snake = addToSnake(snake, current, grow=grow)
-        if len(snake) == width / 2:
-            return True
-        if time() - playtime > TIMELIMIT:
-            return False
         sleep(TIMEDELAY)
         # Color
         updateColors(grid)
         # sooo many levels of you don't wanna know!!!
-        hx = int('00' + grid[width/2][snake[0][1]].getFill()[3:],16)
-        hx = hx / 100000.0
+        #print(grid[width/2][snake[0][1]].getFill()[3:5])
+        hx = int(grid[width/2][snake[0][1]].getFill()[3:5],16) - 200
+        hx = max(0, hx/100.0)
+        #print(' %.2f' % hx)
         score += hx
-        print('score: %.2f' % score)
         grow = False
+        scoreLabel.undraw()
+        timeLabel.undraw()
+        scoreLabel.setText('Length: %.2f' % score)
+        timeLabel.setText( 'Score: %d'    % round(TIMELIMIT - (time() - playtime)))
+        scoreLabel.draw(win)
+        timeLabel.draw(win)
+
     return False
 
 
@@ -166,16 +169,9 @@ def main():
     global height, width, size, TIMELIMIT
     win = GraphWin("Snakewell", width=width*size, height=height*size)
     start = time()
-    if gameLoop(win):
-        stop = time()
-        diff = round(stop-start,2)
-        print('New high score! %d' % (TIMELIMIT-diff))
-    else:
+    if not gameLoop(win):
         print('Loser')
     win.close()    # Close window when done
-
-
-
 
 main()
 
