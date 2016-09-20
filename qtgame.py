@@ -44,14 +44,18 @@ class SnakeModel():
                 c.append(ri(10))
             self._grid.append(c)
 
-    def nextColumn():
+    def nextColumn(self):
         c = []
         for i in range(self._y):
             c.append(abs(soil(i/10.0))/5)
         return self._grid.append(c)
 
+    def snakeUp(self):
+        print('snake up')
+    def snakeDn(self):
+        print('snake dn')
 
-    def updateColors(grid):
+    def updateColors(self,grid):
         height,width=self._y,self._x
         for i in range(0,width-1):
             for j in range(height):
@@ -63,14 +67,37 @@ class SnakeModel():
 
 
 class SnakeGame():
+    UP = 1
+    DN = 2
     def __init__(self, view, model, app):
         self._view = view
         self._model = model
+        self._app = app
         self._timer = QtCore.QTimer()
         self._timer.timeout.connect(view.repaint)
+        self._timer.timeout.connect(self.update)
+        self._user_request = None # None, 'up' or 'dn'
+
+    def up(self):
+        self._user_request = SnakeGame.UP
+
+    def dn(self):
+        self._user_request = SnakeGame.DN
+
+    def update(self):
+        req = self._user_request
+        self._user_request = None
+        if req == SnakeGame.UP:
+            self._model.snakeUp()
+        elif req == SnakeGame.DN:
+            self._model.snakeDn()
+
+    def run(self):
         self._timer.start(10)
-        view.abortRequested.connect(app.quit)
-        view.show()
+        self._view.abortRequested.connect(self._app.quit)
+        self._view.upRequested.connect(self.up)
+        self._view.dnRequested.connect(self.dn)
+        self._view.show()
 
 
 class SnakeView(QtGui.QGraphicsView):
@@ -84,7 +111,9 @@ class SnakeView(QtGui.QGraphicsView):
         self._keymap = {QtCore.Qt.Key_Q: self.abortRequested,
                         QtCore.Qt.Key_W: self.upRequested,
                         QtCore.Qt.Key_S: self.dnRequested}
+        self.__setup__()
 
+    def __setup__(self):
         rg = QColor.fromRgb(0,0,0)
         pen = QPen(rg)
         brush = QBrush(rg)
@@ -116,13 +145,12 @@ class SnakeView(QtGui.QGraphicsView):
         colorize(rect, soil((int(time()) % 10) / 10.0))
 
 
-
 def main():
-    #global height, width, size, TIMELIMIT
     app = QtGui.QApplication([])
     view = SnakeView()
     model = SnakeModel()
     controller = SnakeGame(view, model, app)
+    controller.run()
 
     app.exec_()
 
