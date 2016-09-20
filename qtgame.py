@@ -63,7 +63,15 @@ class SnakeModel():
 
 
 class SnakeGame():
-    pass
+    def __init__(self, view, model, app):
+        self._view = view
+        self._model = model
+        self._timer = QtCore.QTimer()
+        self._timer.timeout.connect(view.repaint)
+        self._timer.start(10)
+        view.abortRequested.connect(app.quit)
+        view.show()
+
 
 class SnakeView(QtGui.QGraphicsView):
 
@@ -77,6 +85,23 @@ class SnakeView(QtGui.QGraphicsView):
                         QtCore.Qt.Key_W: self.upRequested,
                         QtCore.Qt.Key_S: self.dnRequested}
 
+        rg = QColor.fromRgb(0,0,0)
+        pen = QPen(rg)
+        brush = QBrush(rg)
+        pen.setWidth(1)
+        self.setGeometry(QtCore.QRect(0,0,800,400))
+        self.scene = QtGui.QGraphicsScene(self)
+        self.setScene(self.scene)
+
+        self.installEventFilter(self)
+
+        self._rects = []
+        for i in range(20):
+            pen.setColor(pseudocolor(0))
+            rect = self.scene.addRect(30*i,10*i,10,10,pen=pen,brush=brush)
+            self._rects.append(rect)
+
+
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress:
             k = event.key()
@@ -86,50 +111,19 @@ class SnakeView(QtGui.QGraphicsView):
         else:
             return False
 
+    def repaint(self):
+        rect = self._rects[ri(20)]
+        colorize(rect, soil((int(time()) % 10) / 10.0))
+
+
 
 def main():
     #global height, width, size, TIMELIMIT
     app = QtGui.QApplication([])
     view = SnakeView()
     model = SnakeModel()
+    controller = SnakeGame(view, model, app)
 
-    view.setGeometry(QtCore.QRect(0,0,800,400))
-    view.scene = QtGui.QGraphicsScene(view)
-    view.setScene(view.scene)
-
-    view.installEventFilter(view)
-     
-    rg = QColor.fromRgb(0,0,0)
-    pen = QPen(rg)
-    brush = QBrush(rg)
-    pen.setWidth(1)
-
-    rects = []
-
-    for i in range(20):
-        pen.setColor(pseudocolor(0))
-        rect = view.scene.addRect(30*i,10*i,10,10,pen=pen,brush=brush)
-        rects.append(rect)
-
-    def repaint():
-        rect = rects[ri(20)]
-        colorize(rect, soil((int(time()) % 10) / 10.0))
-
-    def stopped_painting():
-        print('stopped painting')
-
-    timer = QtCore.QTimer()
-    timer.timeout.connect(repaint)
-    timer.start(10)
-    view.abortRequested.connect(app.quit)
-
-    #life = QtCore.QTimer()
-    #life.timeout.connect(painter.stop)
-    #life.timeout.connect(stopped_painting)
-    #life.setSingleShot(True)
-    #life.start(5000)
-
-    view.show()
     app.exec_()
 
 if __name__ == '__main__':
