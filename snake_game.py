@@ -11,7 +11,6 @@ class SnakeGame():
         self._model = model
         self._app = app
         self._timer = QtCore.QTimer()
-        self._timer.timeout.connect(view.repaint)
         self._timer.timeout.connect(self.update)
         self._user_request = None # None, 'up' or 'dn'
 
@@ -28,6 +27,8 @@ class SnakeGame():
             self._model.snakeUp()
         elif req == SnakeGame.DN:
             self._model.snakeDn()
+
+        self._view.repaint(self._model.matrix(), self._model.snake())
 
     def run(self):
         self._timer.start(10)

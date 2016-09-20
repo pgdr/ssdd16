@@ -1,4 +1,5 @@
-from snake_utils import soil, ri
+from snake_utils import soil, ri, colorize
+
 class SnakeModel():
     def __init__(self, x=20,y=10):
         self._x = x
@@ -9,6 +10,7 @@ class SnakeModel():
             for j in range(y):
                 c.append(ri(10))
             self._grid.append(c)
+        self._snake = [(x/2-2, y/2),(x/2-1, y/2),(x/2, y/2)]
 
     def nextColumn(self):
         c = []
@@ -17,9 +19,19 @@ class SnakeModel():
         return self._grid.append(c)
 
     def snakeUp(self):
+        i,j = ri(self._x), ri(self._y)
+        self._grid[i][j] = soil(0.7)
         print('snake up')
+
     def snakeDn(self):
+        i,j = ri(self._x), ri(self._y)
+        self._grid[i][j] = soil(0.3)
         print('snake dn')
+
+    def matrix(self):
+        return self._grid
+    def snake(self):
+        return self._snake
 
     def updateColors(self,grid):
         height,width=self._y,self._x

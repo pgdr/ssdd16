@@ -14,9 +14,13 @@ from snake_view import SnakeView
 from snake_model import SnakeModel
 
 def main():
+    height = 20
+    width  = 50
+    size   = 20
+
     app = QtGui.QApplication([])
-    view = SnakeView()
-    model = SnakeModel()
+    view = SnakeView(width, height, size)
+    model = SnakeModel(width,height)
     controller = SnakeGame(view, model, app)
     controller.run()
 
