@@ -31,10 +31,14 @@ class SnakeView(QGraphicsView):
         self._scoreItem = self.scene.addSimpleText('')
         self._prevOpt = []
 
-    def _sq(self, x, y):
+    def _sq(self, x, y, pen=None, brush=None):
+        if not pen:
+            pen = self._pen
+        if not brush:
+            brush = self._brush
         rect = self.scene.addRect(x*self._size, y*self._size,
                                   self._size, self._size,
-                                  pen=self._pen, brush=self._brush)
+                                  pen=pen, brush=brush)
         return rect
 
 
@@ -80,11 +84,11 @@ class SnakeView(QGraphicsView):
         self._prevOpt = []
         s = self._size
         p = self._pen
+        b = QBrush() # transparent brush
         p.setWidth(2)
         p.setColor(SnakeView.WHITE)
         for i in range(len(path)):
             x,y = i, path[i]
-            coords = x*s,y*s,s,s
-            l = self.scene.addRect(*coords, pen=p)
+            l =  self._sq(x,y,pen=p,brush=b)
             self._prevOpt.append(l)
         p.setWidth(1)
