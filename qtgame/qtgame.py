@@ -15,8 +15,8 @@ except:
 def printIntro():
     print('Welcome to QtSnake!')
     print('')
-    print('Press W/Up   to move down')
-    print('Press S/Down to move up')
+    print('Press W/Up   to move up')
+    print('Press S/Down to move down')
     print('Press Q/Esc  to quit')
     print('Press Space  to toggle solution (DP)')
 
