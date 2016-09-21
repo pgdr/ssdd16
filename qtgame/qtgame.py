@@ -3,8 +3,14 @@ from PyQt4.QtGui import QApplication
 
 from snake_game import SnakeGame
 from snake_view import SnakeView
-from snake_model_norne import SnakeModelNorne
-from resslice import ResSlice
+from snake_model import SnakeModel
+from os.path import isfile
+
+try:
+    from snake_model_norne import SnakeModelNorne
+    from resslice import ResSlice
+except:
+    print('No ERT support')
 
 def printIntro():
     print('Welcome to QtSnake!')
@@ -18,18 +24,24 @@ def main():
     height = 22
     width  = 40
     size   = 20
-    timer  = 100 # ms sleep
-    timelimit = 30 # game duration (seconds)
+    timer  = 60 # ms sleep
+    timelimit = 100 # game duration (seconds)
+
+    gridfile = 'norne.EGRID'
+    restfile = 'norne.UNRST'
+    if not isfile(gridfile) or not isfile(restfile):
+        print('Needs norne.EGRID and norne.UNRST to play norne.')
 
     printIntro()
 
-    gridfile = '../norne/NORNE_ATW2013.EGRID'
-    restfile = '../norne/NORNE_ATW2013.UNRST'
-
     app = QApplication([])
     view = SnakeView(width, height, size)
-    res_slice = ResSlice(gridfile, restfile)
-    model = SnakeModelNorne(res_slice, width, height)
+    model = None
+    try:
+        res_slice = ResSlice(gridfile, restfile)
+        model = SnakeModelNorne(res_slice, width, height)
+    except:
+        model = SnakeModel(width, height)
     controller = SnakeGame(view, model, app.quit, timelimit)
     controller.run(timer)
 

@@ -5,6 +5,7 @@ class ResSlice():
         self._grid = EclGrid(grid)
         self._rest = EclFile(rest)
         self._step = step
+        self._num_steps = self._rest.num_report_steps()
 
     def soil(self, swat_kw, a_idx):
         if a_idx < 0:
@@ -15,11 +16,17 @@ class ResSlice():
             val /= 2
         return val
 
+    def nextStep(self):
+        self._step += 1
+
     def getwall(self, i):
         grid, rest = self._grid, self._rest
-        swat_kw = rest.iget_kw('SWAT', 0)[self._step]
         nx, ny, nz = grid.getNX(), grid.getNY(), grid.getNZ()
-     
+        if i >= nx:
+            i = 0
+            self.nextStep()
+
+        swat_kw = rest.iget_kw('SWAT', 0)[self._step % self._num_steps]
         wall = []
         for j in range(ny):
             c = []
