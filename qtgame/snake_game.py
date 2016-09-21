@@ -11,10 +11,10 @@ from dpapi import dynamicProgramming as DP
 class SnakeGame():
     UP = 1
     DN = 2
-    def __init__(self, view, model, app, timelimit=30):
+    def __init__(self, view, model, exit_function, timelimit=30):
         self._view = view
         self._model = model
-        self._app = app
+        self._exit = exit_function
         self._timer = QtCore.QTimer()
         self._timer.timeout.connect(self.update)
         self._user_request = None # None, 'up' or 'dn'
@@ -45,12 +45,14 @@ class SnakeGame():
         if self._score >= l:
             self._model.snakeGrow()
 
+        # time out
+        if remaining < 0:
+            print('Loser')
+            self._view.gameOverRequested.emit()
+
         # snake reached end of board (left-most side)
         if l >= self._model.width() / 2:
-            if remaining < 0:
-                print('Loser')
-            else:
-                print('Your score: %.2f' % remaining)
+            print('Your score: %.2f' % remaining)
             self._view.gameOverRequested.emit()
 
         # go up or down according to user request
@@ -69,8 +71,8 @@ class SnakeGame():
 
     def run(self, timer=100):
         self._timer.start(timer)
-        self._view.abortRequested.connect(self._app.quit)
-        self._view.gameOverRequested.connect(self._app.quit)
+        self._view.abortRequested.connect(self._exit)
+        self._view.gameOverRequested.connect(self._exit)
         self._view.upRequested.connect(self.up)
         self._view.dnRequested.connect(self.dn)
         self._view.show()

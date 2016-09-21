@@ -9,11 +9,12 @@ def main():
     width  = 50
     size   = 20
     timer  = 100 # ms sleep
+    timelimit = 30 # game duration (seconds)
 
     app = QApplication([])
     view = SnakeView(width, height, size)
     model = SnakeModel(width, height)
-    controller = SnakeGame(view, model, app)
+    controller = SnakeGame(view, model, app.quit, timelimit)
     controller.run(timer)
 
     app.exec_()
