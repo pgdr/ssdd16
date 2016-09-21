@@ -19,12 +19,16 @@ class SnakeGame():
         self._score = 0
         self._timelimit = timelimit
         self._start = time()
+        self._drawDp = False
 
     def up(self):
         self._user_request = SnakeGame.UP
 
     def dn(self):
         self._user_request = SnakeGame.DN
+
+    def toggleDp(self):
+        self._drawDp = not self._drawDp
 
     def currentTimeScore(self):
         ctime = time()
@@ -63,8 +67,11 @@ class SnakeGame():
         self._model.updateColors()
         self._view.repaint(self._model.matrix(), self._model.snake(), '%.2f'%remaining)
 
-        opt = DP(self._model.matrix())
-        self._view.drawOpt(opt)
+        if self._drawDp:
+            opt = DP(self._model.matrix())
+            self._view.drawOpt(opt)
+        else:
+            self._view.drawOpt([])
 
     def run(self, timer=100):
         self._timer.start(timer)
@@ -72,4 +79,5 @@ class SnakeGame():
         self._view.gameOverRequested.connect(self._exit)
         self._view.upRequested.connect(self.up)
         self._view.dnRequested.connect(self.dn)
+        self._view.dpRequested.connect(self.toggleDp)
         self._view.show()

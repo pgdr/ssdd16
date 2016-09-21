@@ -10,6 +10,7 @@ class SnakeView(QGraphicsView):
     abortRequested    = pyqtSignal()
     upRequested       = pyqtSignal()
     dnRequested       = pyqtSignal()
+    dpRequested       = pyqtSignal() # Toggle DP
     BLACK = QColor.fromRgb(0,0,0)
     WHITE = QColor.fromRgb(255,255,255)
 
@@ -20,7 +21,8 @@ class SnakeView(QGraphicsView):
                         Qt.Key_W:      self.upRequested,
                         Qt.Key_Up:     self.upRequested,
                         Qt.Key_S:      self.dnRequested,
-                        Qt.Key_Down:   self.dnRequested}
+                        Qt.Key_Down:   self.dnRequested,
+                        Qt.Key_Space:  self.dpRequested}
         self._width = width   # no squares wide (i/x/m direction)
         self._height = height # no squares high (j/y/n direction)
         self._size = size     # pixels per square, e.g. 10x10
