@@ -67,8 +67,8 @@ class SnakeGame():
         opt = DP(self._model.matrix())
         self._view.drawOpt(opt)
 
-    def run(self):
-        self._timer.start(100)
+    def run(self, timer=100):
+        self._timer.start(timer)
         self._view.abortRequested.connect(self._app.quit)
         self._view.gameOverRequested.connect(self._app.quit)
         self._view.upRequested.connect(self.up)

@@ -17,12 +17,13 @@ def main():
     height = 20
     width  = 50
     size   = 20
+    timer  = 100 # ms sleep
 
     app = QtGui.QApplication([])
     view = SnakeView(width, height, size)
     model = SnakeModel(width,height)
     controller = SnakeGame(view, model, app)
-    controller.run()
+    controller.run(timer)
 
     app.exec_()
 
