@@ -1,11 +1,12 @@
 from ert.ecl import EclFile, EclGrid
 
 class ResSlice():
-    def __init__(self,grid,rest,step=5):
+    def __init__(self,grid,rest,step=5,kw='SWAT'):
         self._grid = EclGrid(grid)
         self._rest = EclFile(rest)
         self._step = step
-        self._num_steps = self._rest.num_report_steps()
+        self._num_steps = 1#self._rest.num_report_steps()
+        self._kw = kw
 
     def soil(self, swat_kw, a_idx):
         if a_idx < 0:
@@ -26,7 +27,7 @@ class ResSlice():
             i = 0
             self.nextStep()
 
-        swat_kw = rest.iget_kw('SWAT', 0)[self._step % self._num_steps]
+        swat_kw = rest.iget_kw(self._kw, 0)[self._step % self._num_steps]
         wall = []
         for j in range(ny):
             c = []

@@ -28,9 +28,9 @@ def main():
     timelimit = 100 # game duration (seconds)
 
     gridfile = 'norne.EGRID'
-    restfile = 'norne.UNRST'
-    if not isfile(gridfile) or not isfile(restfile):
-        print('Needs norne.EGRID and norne.UNRST to play norne.')
+    initfile = 'norne.INIT'
+    if not isfile(gridfile) or not isfile(initfile):
+        print('Needs norne.EGRID and norne.INIT to play norne.')
 
     printIntro()
 
@@ -38,7 +38,7 @@ def main():
     view = SnakeView(width, height, size)
     model = None
     try:
-        res_slice = ResSlice(gridfile, restfile)
+        res_slice = ResSlice(gridfile, initfile, kw='SWATINIT')
         model = SnakeModelNorne(res_slice, width, height)
     except:
         model = SnakeModel(width, height)
