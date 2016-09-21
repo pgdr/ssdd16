@@ -5,10 +5,12 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QEvent
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtGui import QPen, QColor, QBrush
+from PyQt4.QtGui import QGraphicsSimpleTextItem as QText
+from PyQt4.QtCore import QString
 
 from time import time
 
-from snake_utils import *
+from snake_utils import colorize
 
 
 
@@ -28,8 +30,8 @@ class SnakeView(QtGui.QGraphicsView):
         self._height = height # no squares high (j/y/n direction)
         self._size = size     # pixels per square, e.g. 10x10
         self._grid = []
-
         self.__setup__()
+        self._scoreItem = self.scene.addSimpleText('')
 
     def _sq(self, x, y):
         rect = self.scene.addRect(x*self._size, y*self._size,
@@ -66,10 +68,11 @@ class SnakeView(QtGui.QGraphicsView):
         else:
             return False
 
-    def repaint(self, matrix, snake):
+    def repaint(self, matrix, snake, score):
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
                 val = matrix[i][j]
                 colorize(self._grid[i][j], val)
         for (i,j) in snake:
             colorize(self._grid[i][j], 2)
+        self._scoreItem.setText(str(score))

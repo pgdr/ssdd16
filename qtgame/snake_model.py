@@ -1,4 +1,4 @@
-from snake_utils import soil, ri, colorize, addToSnake
+from snake_utils import soil, addToSnake
 
 class SnakeModel():
     def __init__(self, x=20,y=10):

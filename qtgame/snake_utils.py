@@ -6,11 +6,9 @@ from math import sqrt
 from random import random, randint
 import colorsys
 
-def ri(x):
-    return randint(0,x-1)
-
 def soil(x):
-    val = random() + (1-abs(1.5 - x))
+    val = (1.0 - abs(0.7 - x))
+    val += random() - 0.5 # in [-0.5, 0.5]
     return max(0, min(val, 1))
 
 def heatcolor(val, minval=0, maxval=1):
