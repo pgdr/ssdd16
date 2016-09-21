@@ -21,8 +21,21 @@ def heatcolor(val, minval=0, maxval=1):
 def colorize(obj, val):
     """Takes and q object and colors it with val"""
     pen,brush = obj.pen(), obj.brush()
-    c = heatcolor(val)
+    if val == 2:
+        c = QColor.fromRgb(0,0,255)
+    else:
+        c = heatcolor(val)
     pen.setColor(c)
     brush.setColor(c)
     obj.setPen(pen)
     obj.setBrush(brush)
+
+def addToSnake(snake, head, grow=False):
+    snake.append(head)
+    ns = []
+    start = 1
+    if grow:
+        start = 0
+    for i in range(start,len(snake)):
+        ns.append((snake[i][0]-1, snake[i][1]))
+    return ns

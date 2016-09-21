@@ -14,9 +14,10 @@ from snake_utils import *
 
 class SnakeView(QtGui.QGraphicsView):
 
-    abortRequested = pyqtSignal()
-    upRequested    = pyqtSignal()
-    dnRequested    = pyqtSignal()
+    gameOverRequested = pyqtSignal()
+    abortRequested    = pyqtSignal()
+    upRequested       = pyqtSignal()
+    dnRequested       = pyqtSignal()
 
     def __init__(self, width, height, size=10):
         super(SnakeView, self).__init__()
@@ -70,3 +71,5 @@ class SnakeView(QtGui.QGraphicsView):
             for j in range(len(matrix[i])):
                 val = matrix[i][j]
                 colorize(self._grid[i][j], val)
+        for (i,j) in snake:
+            colorize(self._grid[i][j], 2)
