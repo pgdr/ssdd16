@@ -20,6 +20,7 @@ class SnakeGame():
         self._timelimit = timelimit
         self._start = time()
         self._drawDp = False
+        self._interval = -1
 
     def up(self):
         self._user_request = SnakeGame.UP
@@ -45,6 +46,8 @@ class SnakeGame():
         l = len(self._model.snake())
         if self._score >= l:
             self._model.snakeGrow()
+            self._interval = max(1, self._interval - 1)
+            self._timer.setInterval(self._interval)
 
         # time out
         if remaining < 0:
@@ -73,8 +76,11 @@ class SnakeGame():
         else:
             self._view.drawOpt([])
 
+
     def run(self, timer=100):
         self._timer.start(timer)
+        self._interval = self._timer.interval()
+
         self._view.abortRequested.connect(self._exit)
         self._view.gameOverRequested.connect(self._exit)
         self._view.upRequested.connect(self.up)
