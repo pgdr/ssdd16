@@ -20,6 +20,8 @@ class SnakeView(QtGui.QGraphicsView):
     abortRequested    = pyqtSignal()
     upRequested       = pyqtSignal()
     dnRequested       = pyqtSignal()
+    BLACK = QColor.fromRgb(0,0,0)
+    WHITE = QColor.fromRgb(255,255,255)
 
     def __init__(self, width, height, size=10):
         super(SnakeView, self).__init__()
@@ -32,6 +34,7 @@ class SnakeView(QtGui.QGraphicsView):
         self._grid = []
         self.__setup__()
         self._scoreItem = self.scene.addSimpleText('')
+        self._prevOpt = []
 
     def _sq(self, x, y):
         rect = self.scene.addRect(x*self._size, y*self._size,
@@ -41,9 +44,8 @@ class SnakeView(QtGui.QGraphicsView):
 
 
     def __setup__(self):
-        black = QColor.fromRgb(0,0,0)
-        self._pen = QPen(black)
-        self._brush = QBrush(black)
+        self._pen = QPen(SnakeView.BLACK)
+        self._brush = QBrush(SnakeView.BLACK)
         self._pen.setWidth(1)
         x,y=(1+self._width) * self._size, (1+self._height) * self._size
         self.setGeometry(QtCore.QRect(0,0,x,y))
@@ -76,3 +78,18 @@ class SnakeView(QtGui.QGraphicsView):
         for (i,j) in snake:
             colorize(self._grid[i][j], 2)
         self._scoreItem.setText(str(score))
+
+    def drawOpt(self, path):
+        for x in self._prevOpt:
+            self.scene.removeItem(x)
+        self._prevOpt = []
+        s = self._size
+        p = self._pen
+        p.setColor(SnakeView.WHITE)
+        halfsize = s / 2.0
+        for i in range(1, len(path)):
+            x1,y1 = i-1, path[i-1]
+            x2,y2 = i  , path[i  ]
+            coords = x1*s,y1*s+halfsize,x2*s,y2*s+halfsize
+            l = self.scene.addLine(*coords, pen=p)
+            self._prevOpt.append(l)

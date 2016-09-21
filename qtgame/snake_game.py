@@ -6,6 +6,8 @@ from snake_view import SnakeView
 from time import time
 from math import sqrt
 
+from dpapi import dynamicProgramming as DP
+
 class SnakeGame():
     UP = 1
     DN = 2
@@ -61,6 +63,9 @@ class SnakeGame():
 
         self._model.updateColors()
         self._view.repaint(self._model.matrix(), self._model.snake(), '%.2f'%remaining)
+
+        opt = DP(self._model.matrix())
+        self._view.drawOpt(opt)
 
     def run(self):
         self._timer.start(100)
