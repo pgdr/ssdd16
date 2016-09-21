@@ -17,7 +17,7 @@ def _get(tab,i,j,width,height,ret=0):
     return ret
 
 
-def dynamicProgramming(mx, start_index=None):
+def dynamicProgramming(mx):
     """Computes optimum value using dynamic programming.
        Returns solution path."""
     dpt    = _zeroes(mx)

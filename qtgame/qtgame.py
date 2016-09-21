@@ -1,13 +1,4 @@
-from __future__ import print_function
-import sys
-
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QEvent
-from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtGui import QPen, QColor, QBrush
-
-from random import random, randint
-import colorsys
+from PyQt4.QtGui import QApplication
 
 from snake_game import SnakeGame
 from snake_view import SnakeView
@@ -19,9 +10,9 @@ def main():
     size   = 20
     timer  = 100 # ms sleep
 
-    app = QtGui.QApplication([])
+    app = QApplication([])
     view = SnakeView(width, height, size)
-    model = SnakeModel(width,height)
+    model = SnakeModel(width, height)
     controller = SnakeGame(view, model, app)
     controller.run(timer)
 
@@ -29,4 +20,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
