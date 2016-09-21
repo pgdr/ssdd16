@@ -80,11 +80,11 @@ class SnakeView(QGraphicsView):
         self._prevOpt = []
         s = self._size
         p = self._pen
+        p.setWidth(2)
         p.setColor(SnakeView.WHITE)
-        halfsize = s / 2.0
-        for i in range(1, len(path)):
-            x1,y1 = i-1, path[i-1]
-            x2,y2 = i  , path[i  ]
-            coords = x1*s,y1*s+halfsize,x2*s,y2*s+halfsize
-            l = self.scene.addLine(*coords, pen=p)
+        for i in range(len(path)):
+            x,y = i, path[i]
+            coords = x*s,y*s,s,s
+            l = self.scene.addRect(*coords, pen=p)
             self._prevOpt.append(l)
+        p.setWidth(1)
