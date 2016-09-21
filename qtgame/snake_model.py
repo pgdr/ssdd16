@@ -5,7 +5,7 @@ class SnakeModel():
         self._x = x
         self._y = y
         self.__setup__()
-        self._current = y/2 # head of snake
+        self._current = y//2 # head of snake
         self._grow = False # should snake grow next iteration?
 
     def __setup__(self):
@@ -14,7 +14,7 @@ class SnakeModel():
         for i in range(x):
             c = self.nextColumn()
             self._grid.append(c)
-        self._snake = [(x/2-2, y/2),(x/2-1, y/2),(x/2, y/2)]
+        self._snake = [(x//2-2, y//2),(x//2-1, y//2),(x//2, y//2)]
 
     def width(self):
         return self._x
@@ -52,7 +52,7 @@ class SnakeModel():
         return self._snake
 
     def updateColors(self):
-        head = (self._x/2, self._current)
+        head = (self._x//2, self._current)
         self._snake = addToSnake(self._snake, head, self._grow)
         self._grow = False
         c = self.nextColumn()

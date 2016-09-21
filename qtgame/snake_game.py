@@ -52,7 +52,7 @@ class SnakeGame():
             self._view.gameOverRequested.emit()
 
         # snake reached end of board (left-most side)
-        if l >= self._model.width() / 2:
+        if l >= self._model.width() // 2:
             print('Your score: %.2f' % remaining)
             self._view.gameOverRequested.emit()
 
