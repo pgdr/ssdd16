@@ -1,7 +1,4 @@
-from PyQt4 import QtCore
-
-from snake_model import SnakeModel
-from snake_view import SnakeView
+from PyQt4.QtCore import QTimer
 
 from time import time
 from math import sqrt
@@ -15,7 +12,7 @@ class SnakeGame():
         self._view = view
         self._model = model
         self._exit = exit_function
-        self._timer = QtCore.QTimer()
+        self._timer = QTimer()
         self._timer.timeout.connect(self.update)
         self._user_request = None # None, 'up' or 'dn'
 
