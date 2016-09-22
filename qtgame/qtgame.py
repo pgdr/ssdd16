@@ -6,7 +6,7 @@ from snake_view import SnakeView
 from snake_model import SnakeModel
 
 def printIntro():
-    print('Welcome to QtSnake!')
+    print('Welcome to SnakeWell!')
     print('')
     print('Press W/Up   to move up')
     print('Press S/Down to move down')
