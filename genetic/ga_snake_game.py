@@ -43,13 +43,14 @@ class GeneticSnakeGame():
         b = ga.best()
         if b > self._best:
             print('Best individual: (%.2f) %s' % (b.fitness(),b))
+            self._best_repeated = 0
             self._best = b
             if b.fitness() >= self._opt * self._optlimit:
                 print('Reached %d%% of opt.  Exit.' % int(100.0*self._optlimit))
                 self._exit()
         else:
             self._best_repeated += 1
-            if self._best_repeated > 25:
+            if self._best_repeated >= 5:
                 print("SHAAAAAKE IT UP!!!")
                 self._ga.shake()
                 self._best_repeated = 0
@@ -62,11 +63,12 @@ class GeneticSnakeGame():
         print('OPT (DP): %.2f' % self._dp.fitness())
 
     def update(self):
-        self.__iterate()
-        self._model.updateColors(self._matrix)
         if not self._drawn:
+            self._model.updateColors(self._matrix)
             self._view.repaint(self._model.matrix(),[])
             self._drawn = True
+        else:
+            self.__iterate()
         self._view.drawOpt(self._ga.best())
         self._view.drawDp(self._dp)
         self._view.drawTopTen(self._ga.topten(self._numlines))
