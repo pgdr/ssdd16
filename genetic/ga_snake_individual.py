@@ -86,12 +86,11 @@ class GeneticSnakeIndividual():
         m.__freeze()
         return m
 
-
     def __mutatepoint(self):
         m = GeneticSnakeIndividual(self._matrix)
         m._snake = [self._snake[i] for i in range(self._width)]
         e = ri(self._width)
-        ud = randint(-1,1)
+        ud = randint(-2,2)
         m._snake[e] = self.__ysqueeze(m._snake[e] + ud)
         if e > 0:
             m.__propagateLeft(e)
