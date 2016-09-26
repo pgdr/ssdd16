@@ -4,12 +4,15 @@ from random import random, randint
 
 class GeneticSnakeIndividual():
 
-    def __init__(self, matrix):
+    def __init__(self, matrix, individual=None):
         self._width = len(matrix)
         self._height = len(matrix[0])
         self._matrix = matrix
         self._snake = []
         self._fitness = None
+        if individual:
+            self._snake = individual
+            self.__freeze()
 
     def __computeFitness(self):
         s = self._snake

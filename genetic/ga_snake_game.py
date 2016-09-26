@@ -19,6 +19,7 @@ class GeneticSnakeGame():
         self._dp = None
         self._iterations = iterations
         self.__setup(size)
+        self._best = self._ga.best()
 
     def __setup(self, size = 15):
         pool = set()
@@ -34,7 +35,9 @@ class GeneticSnakeGame():
         for i in range(self._iterations):
             ga.iteration()
         b = ga.best()
-        print('Best individual: (%.2f) %s' % (b.fitness(),b))
+        if b > self._best:
+            print('Best individual: (%.2f) %s' % (b.fitness(),b))
+            self._best = b
 
     def up(self):
         pass
@@ -47,7 +50,9 @@ class GeneticSnakeGame():
             self._dp = None
             return
         from ga_dpapi import dynamicProgramming as DP
-        self._dp = DP(self._matrix)
+        optsnake = DP(self._matrix)
+        self._dp = GeneticSnakeIndividual(self._matrix, individual=optsnake)
+        print('OPT (DP): %.2f' % self._dp.fitness())
 
     def update(self):
         self.__iterate()
