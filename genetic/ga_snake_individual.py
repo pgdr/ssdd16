@@ -77,35 +77,46 @@ class GeneticSnakeIndividual():
             self.__computeFitness()
         return self._fitness
 
-    def __mutateline(self):
-        m = GeneticSnakeIndividual(self._matrix)
-        m._snake = [self._snake[i] for i in range(self._width)]
-        ud = randint(-1,1)
-        for i in range(len(self._snake)):
-            m._snake[i] = m.__ysqueeze(self._snake[i] + ud)
-        m.__freeze()
-        return m
+    def __ud(self, x = 1):
+        x = abs(x)
+        if x == 0:
+            raise ValueError('Cannot accept 0')
+        ud = 0
+        while ud == 0:
+            ud = randint(-x,x)
+        return ud
 
-    def __mutatepoint(self):
+    def __segment(self):
+        a,b = ri(self._width),ri(self._width)
+        if a > b:
+            return b,a
+        if a == b:
+            if a == 0:
+                return a, a+1
+            if b == self._width:
+                return b-1,b
+            return a,a+1
+        return a,b
+
+    def __mutatesegment(self):
+        assert(self.__isvalid())
         m = GeneticSnakeIndividual(self._matrix)
         m._snake = [self._snake[i] for i in range(self._width)]
-        e = ri(self._width)
-        ud = randint(-2,2)
-        m._snake[e] = self.__ysqueeze(m._snake[e] + ud)
-        if e > 0:
-            m.__propagateLeft(e)
-        if e < self._width - 1:
-            m.__propagateRight(e)
+        a,b = self.__segment()
+        ud = self.__ud(2)
+        for i in range(a,b):
+            m._snake[i] = self.__ysqueeze(m._snake[i] + ud)
+
+        m.__propagateLeft(a)
+        m.__propagateRight(b-1)
+
         m.__freeze()
+        assert(m.__isvalid())
         return m
 
     def mutate(self):
         assert(self.__isvalid())
-        m = None
-        if random() <= 0.33:
-            m = self.__mutatepoint()
-        else:
-            m = self.__mutateline()
+        m = self.__mutatesegment()
         assert(m.__isvalid())
         return m
 
