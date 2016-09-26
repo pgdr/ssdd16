@@ -11,9 +11,10 @@ class GeneticSnakeView(QGraphicsView):
     upRequested       = pyqtSignal()
     dnRequested       = pyqtSignal()
     dpRequested       = pyqtSignal() # Toggle DP
-    BLACK = QColor.fromRgb(0,0,0)
-    WHITE = QColor.fromRgb(255,255,255)
-    GRAY  = QColor.fromRgb(100,100,100)
+    BLACK = QColor.fromRgb(  0,   0,   0)
+    BLUE  = QColor.fromRgb(  0,   0, 255)
+    WHITE = QColor.fromRgb(255, 255, 255)
+    GRAY  = QColor.fromRgb(100, 100, 100)
 
     def __init__(self, width, height, size=10):
         super(GeneticSnakeView, self).__init__()
@@ -32,14 +33,18 @@ class GeneticSnakeView(QGraphicsView):
         self._scoreItem = self.scene.addSimpleText('')
         self._prevOpt = []
         self._prevTopTens = []
+        self._prevDp = []
 
-    def _sq(self, x, y, pen=None, brush=None):
+    def _sq(self, x, y, pen=None, brush=None, shrink=False):
         if not pen:
             pen = self._pen
         if not brush:
             brush = self._brush
-        rect = self.scene.addRect(x*self._size, y*self._size,
-                                  self._size, self._size,
+        ss = self._size
+        quad = x*ss, y*ss, ss, ss
+        if shrink:
+            quad = x*ss+3, y*ss+3, ss-6, ss-6
+        rect = self.scene.addRect(*quad,
                                   pen=pen, brush=brush)
         return rect
 
@@ -112,9 +117,26 @@ class GeneticSnakeView(QGraphicsView):
         s = self._size
         p = self._pen
         p.setWidth(1)
-        p.setColor(GeneticSnakeView.GRAY)
+        p.setColor(GeneticSnakeView.BLACK)
         for s in snakes:
             for i in range(1,len(s)):
                 quad = i-1,s[i-1],i,s[i] #x1,y1,x2,y2
                 l = self._line(quad,pen=p)
                 self._prevOpt.append(l)
+
+    def drawDp(self, snake):
+        for r in self._prevDp:
+            self.scene.removeItem(r)
+        self._prevDp = []
+        if snake is None:
+            return
+        s = self._size
+        p = self._pen
+        b = QBrush() # transparent brush
+        p.setWidth(2)
+        p.setColor(GeneticSnakeView.BLUE)
+        for i in range(len(snake)):
+            x,y = i, snake[i]
+            l =  self._sq(x,y,pen=p,brush=b,shrink=True)
+            self._prevDp.append(l)
+        p.setWidth(1)

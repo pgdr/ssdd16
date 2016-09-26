@@ -16,6 +16,7 @@ class GeneticSnakeGame():
         self._timer.timeout.connect(self.update)
         self._user_request = None # None, 'up' or 'dn'
         self._matrix = matrix
+        self._dp = None
         self._iterations = iterations
         self.__setup(size)
 
@@ -41,11 +42,19 @@ class GeneticSnakeGame():
     def dn(self):
         pass
 
+    def dp(self):
+        if self._dp:
+            self._dp = None
+            return
+        from ga_dpapi import dynamicProgramming as DP
+        self._dp = DP(self._matrix)
+
     def update(self):
         self.__iterate()
         self._model.updateColors(self._matrix)
         self._view.repaint(self._model.matrix(),[])
         self._view.drawOpt(self._ga.best())
+        self._view.drawDp(self._dp)
         self._view.drawTopTen(self._ga.topten())
 
     def run(self, timer=100):
@@ -55,5 +64,6 @@ class GeneticSnakeGame():
         self._view.abortRequested.connect(self._exit)
         self._view.gameOverRequested.connect(self._exit)
         self._view.upRequested.connect(self.up)
+        self._view.dpRequested.connect(self.dp)
         self._view.dnRequested.connect(self.dn)
         self._view.show()
