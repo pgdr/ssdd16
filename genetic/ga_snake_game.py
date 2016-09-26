@@ -25,6 +25,7 @@ class GeneticSnakeGame():
         self._numlines = numlines # draw the top n best as lines
         self._ga = GeneticSnakeGeneticAlgorithm(self._matrix, GeneticSnakeIndividual.randomIndividual, poolsize)
         self._best = self._ga.best()
+        self._best_repeated = 0
         self._optlimit = optlimit
         self._optsnake = self.__dpsnake()
         self._opt = self._optsnake.fitness()
@@ -46,6 +47,11 @@ class GeneticSnakeGame():
             if b.fitness() >= self._opt * self._optlimit:
                 print('Reached %d%% of opt.  Exit.' % int(100.0*self._optlimit))
                 self._exit()
+        else:
+            self._best_repeated += 1
+            if self._best_repeated > 10:
+                print("SHAAAAAKE IT UP!!!")
+                self._ga.shake()
 
     def dp(self):
         if self._dp:

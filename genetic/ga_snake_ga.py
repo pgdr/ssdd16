@@ -10,8 +10,8 @@ class GeneticSnakeGeneticAlgorithm():
         self._generator = generator
 
         self._pool = []
-        self._size = poolsize
-        self.__shake()
+        self._poolsize = poolsize
+        self.shake()
 
     def best(self):
         """Get the current best individual"""
@@ -39,13 +39,13 @@ class GeneticSnakeGeneticAlgorithm():
             p.append(p[i].mutate())
         self._pool = set(self._pool)
         self.__order()
-        if self._pool > self._size:
-            self._pool = self._pool[:self._size]
+        if self._pool > self._poolsize:
+            self._pool = self._pool[:self._poolsize]
 
-    def __shake(self):
+    def shake(self):
         """Shake.  Generate poolsize many random individuals on top of list."""
         npool = []
-        for i in range(self._size):
+        for i in range(self._poolsize):
             npool.append(self._generator(self._matrix))
         npool += self._pool
         self._pool = npool
