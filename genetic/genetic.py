@@ -54,7 +54,7 @@ def readMatrix():
     matrix = []
     with open(mfile, 'r') as f:
         for line in f:
-            data = map(float, line.strip().split())
+            data = list(map(float, line.strip().split()))
             for i in range(len(data)):
                 r = data[i]
                 if first:

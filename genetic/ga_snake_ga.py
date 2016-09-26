@@ -39,7 +39,7 @@ class GeneticSnakeGeneticAlgorithm():
             p.append(p[i].mutate())
         self._pool = set(self._pool)
         self.__order()
-        if self._pool > self._poolsize:
+        if len(self._pool) > self._poolsize:
             self._pool = self._pool[:self._poolsize]
 
     def shake(self):

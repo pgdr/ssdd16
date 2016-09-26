@@ -49,9 +49,10 @@ class GeneticSnakeGame():
                 self._exit()
         else:
             self._best_repeated += 1
-            if self._best_repeated > 10:
+            if self._best_repeated > 25:
                 print("SHAAAAAKE IT UP!!!")
                 self._ga.shake()
+                self._best_repeated = 0
 
     def dp(self):
         if self._dp:
