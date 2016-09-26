@@ -6,9 +6,11 @@ from math import sqrt
 from ga_snake_individual import GeneticSnakeIndividual
 from ga_snake_ga import GeneticSnakeGeneticAlgorithm
 
+from ga_dpapi import dynamicProgramming as DP
+
 class GeneticSnakeGame():
 
-    def __init__(self, view, model, exit_function, matrix, iterations = 100, size = 20):
+    def __init__(self, view, model, exit_function, matrix, iterations = 100, size = 20, optlimit=1.0):
         self._view = view
         self._model = model
         self._exit = exit_function
@@ -20,6 +22,8 @@ class GeneticSnakeGame():
         self._iterations = iterations
         self.__setup(size)
         self._best = self._ga.best()
+        self._optlimit = optlimit
+        self._opt = self.__dpsnake().fitness()
 
     def __setup(self, size = 15):
         pool = set()
@@ -28,6 +32,10 @@ class GeneticSnakeGame():
         for i in range(10*size):
             pool.add(GeneticSnakeIndividual.randomIndividual(self._matrix, const=True))
         self._ga = GeneticSnakeGeneticAlgorithm(self._matrix, pool, size)
+
+    def __dpsnake(self):
+        optsnake = DP(self._matrix)
+        return GeneticSnakeIndividual(self._matrix, individual=optsnake)
 
 
     def __iterate(self):
@@ -38,6 +46,9 @@ class GeneticSnakeGame():
         if b > self._best:
             print('Best individual: (%.2f) %s' % (b.fitness(),b))
             self._best = b
+            if b.fitness() >= self._opt * self._optlimit:
+                print('Reached %d%% of opt.  Exit.' % int(100.0*self._optlimit))
+                self._exit()
 
     def up(self):
         pass
@@ -49,9 +60,8 @@ class GeneticSnakeGame():
         if self._dp:
             self._dp = None
             return
-        from ga_dpapi import dynamicProgramming as DP
-        optsnake = DP(self._matrix)
-        self._dp = GeneticSnakeIndividual(self._matrix, individual=optsnake)
+
+        self._dp = self.__dpsnake()
         print('OPT (DP): %.2f' % self._dp.fitness())
 
     def update(self):

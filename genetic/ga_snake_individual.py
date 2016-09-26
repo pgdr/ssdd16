@@ -13,6 +13,7 @@ class GeneticSnakeIndividual():
         if individual:
             self._snake = individual
             self.__freeze()
+        self._genealogy = ''
 
     def __computeFitness(self):
         s = self._snake
@@ -25,12 +26,12 @@ class GeneticSnakeIndividual():
     def __freeze(self):
         self._snake = tuple(self._snake)
         self.__computeFitness()
-        assert(self.__isvalid())
+        #assert(self.__isvalid())
 
     def __unfreeze(self):
         self._snake = list(self._snake)
         self._fitness = None
-        assert(self.__isvalid())
+        #assert(self.__isvalid())
 
     def __propagateLeft(self, idx):
         if idx <= 0:
@@ -98,8 +99,8 @@ class GeneticSnakeIndividual():
             return a,a+1
         return a,b
 
-    def __mutatesegment(self):
-        assert(self.__isvalid())
+    def mutate(self):
+        #assert(self.__isvalid())
         m = GeneticSnakeIndividual(self._matrix)
         m._snake = [self._snake[i] for i in range(self._width)]
         a,b = self.__segment()
@@ -109,32 +110,26 @@ class GeneticSnakeIndividual():
 
         m.__propagateLeft(a)
         m.__propagateRight(b-1)
-
+        m._genealogy = 'm(%d,%d,%d)%s' % (a,b,ud,self._genealogy)
         m.__freeze()
-        assert(m.__isvalid())
-        return m
-
-    def mutate(self):
-        assert(self.__isvalid())
-        m = self.__mutatesegment()
-        assert(m.__isvalid())
         return m
 
     def crossover(self, other):
-        assert(self.__isvalid())
-        assert(other.__isvalid())
+        #assert(self.__isvalid())
+        #assert(other.__isvalid())
         m = self.mutate()
         m.__unfreeze()
         c = ri(m._width)
         for i in range(c, m._width):
             m._snake[i] = other._snake[i]
         m.__propagateRight(0)
+        m._genealogy = 'c(%d,%d)%s' % (len(self._genealogy),len(other._genealogy),self._genealogy)
         m.__freeze()
-        assert(m.__isvalid())
+        #assert(m.__isvalid())
         return m
 
     def __str__(self):
-        return 'Snake: %s' % str(self._snake)
+        return 'Snake: %s' % str(self._snake) # self._genealogy
     def __len__(self):
         return len(self._snake)
     def __getitem__(self, idx):
@@ -182,5 +177,5 @@ class GeneticSnakeIndividual():
             y = s._snake[i-1] + ud
             s._snake.append(s.__ysqueeze(y))
         s.__freeze()
-        assert(s.__isvalid())
+        #assert(s.__isvalid())
         return s
