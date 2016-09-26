@@ -1,6 +1,7 @@
 import math
 from ga_snake_utils import ri
 from random import random, randint
+from copy import copy
 
 class GeneticSnakeIndividual():
 
@@ -99,6 +100,11 @@ class GeneticSnakeIndividual():
             return a,a+1
         return a,b
 
+    def __propagateSegment(self,a,b):
+        self.__propagateLeft(a)
+        self.__propagateRight(b-1)
+        #assert(self.__isvalid())
+
     def mutate(self):
         #assert(self.__isvalid())
         m = GeneticSnakeIndividual(self._matrix)
@@ -107,9 +113,7 @@ class GeneticSnakeIndividual():
         ud = self.__ud(2)
         for i in range(a,b):
             m._snake[i] = self.__ysqueeze(m._snake[i] + ud)
-
-        m.__propagateLeft(a)
-        m.__propagateRight(b-1)
+        m.__propagateSegment(a,b)
         m._genealogy = 'm(%d,%d,%d)%s' % (a,b,ud,self._genealogy)
         m.__freeze()
         return m
@@ -117,16 +121,23 @@ class GeneticSnakeIndividual():
     def crossover(self, other):
         #assert(self.__isvalid())
         #assert(other.__isvalid())
-        m = self.mutate()
-        m.__unfreeze()
-        c = ri(m._width)
-        for i in range(c, m._width):
+        m = copy(self)
+        a,b = self.__segment()
+        for i in range(a, b):
             m._snake[i] = other._snake[i]
-        m.__propagateRight(0)
-        m._genealogy = 'c(%d,%d)%s' % (len(self._genealogy),len(other._genealogy),self._genealogy)
+        m.__propagateSegment(a,b)
+        m._genealogy = 'c(%d,%d)%s' % (a,b,self._genealogy)
         m.__freeze()
         #assert(m.__isvalid())
         return m
+
+    def __copy__(self):
+        #assert(self.__isvalid())
+        c = GeneticSnakeIndividual(self._matrix)
+        c._snake = [e for e in self._snake]
+        c._genealogy = self._genealogy
+        #assert(c.__isvalid())
+        return c
 
     def __str__(self):
         return 'Snake: %s' % str(self._snake) # self._genealogy

@@ -10,7 +10,8 @@ from ga_dpapi import dynamicProgramming as DP
 
 class GeneticSnakeGame():
 
-    def __init__(self, view, model, exit_function, matrix, iterations = 100, size = 20, optlimit=1.0):
+    def __init__(self, view, model, exit_function, matrix,
+                 iterations = 100, poolsize = 20, optlimit=1.0, numlines=10):
         self._view = view
         self._model = model
         self._exit = exit_function
@@ -20,18 +21,14 @@ class GeneticSnakeGame():
         self._matrix = matrix
         self._dp = None
         self._iterations = iterations
-        self.__setup(size)
+        self._poolsize = poolsize
+        self._numlines = numlines # draw the top n best as lines
+        self._ga = GeneticSnakeGeneticAlgorithm(self._matrix, GeneticSnakeIndividual.randomIndividual, poolsize)
         self._best = self._ga.best()
         self._optlimit = optlimit
-        self._opt = self.__dpsnake().fitness()
-
-    def __setup(self, size = 15):
-        pool = set()
-        for i in range(size):
-            pool.add(GeneticSnakeIndividual.randomIndividual(self._matrix))
-        for i in range(10*size):
-            pool.add(GeneticSnakeIndividual.randomIndividual(self._matrix, const=True))
-        self._ga = GeneticSnakeGeneticAlgorithm(self._matrix, pool, size)
+        self._optsnake = self.__dpsnake()
+        self._opt = self._optsnake.fitness()
+        self._drawn = False
 
     def __dpsnake(self):
         optsnake = DP(self._matrix)
@@ -50,27 +47,22 @@ class GeneticSnakeGame():
                 print('Reached %d%% of opt.  Exit.' % int(100.0*self._optlimit))
                 self._exit()
 
-    def up(self):
-        pass
-
-    def dn(self):
-        pass
-
     def dp(self):
         if self._dp:
             self._dp = None
             return
-
-        self._dp = self.__dpsnake()
+        self._dp = self._optsnake
         print('OPT (DP): %.2f' % self._dp.fitness())
 
     def update(self):
         self.__iterate()
         self._model.updateColors(self._matrix)
-        self._view.repaint(self._model.matrix(),[])
+        if not self._drawn:
+            self._view.repaint(self._model.matrix(),[])
+            self._drawn = True
         self._view.drawOpt(self._ga.best())
         self._view.drawDp(self._dp)
-        self._view.drawTopTen(self._ga.topten())
+        self._view.drawTopTen(self._ga.topten(self._numlines))
 
     def run(self, timer=100):
         self._timer.start(timer)
@@ -78,7 +70,5 @@ class GeneticSnakeGame():
 
         self._view.abortRequested.connect(self._exit)
         self._view.gameOverRequested.connect(self._exit)
-        self._view.upRequested.connect(self.up)
         self._view.dpRequested.connect(self.dp)
-        self._view.dnRequested.connect(self.dn)
         self._view.show()

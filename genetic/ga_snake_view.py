@@ -8,8 +8,6 @@ class GeneticSnakeView(QGraphicsView):
 
     gameOverRequested = pyqtSignal()
     abortRequested    = pyqtSignal()
-    upRequested       = pyqtSignal()
-    dnRequested       = pyqtSignal()
     dpRequested       = pyqtSignal() # Toggle DP
     BLACK = QColor.fromRgb(  0,   0,   0)
     BLUE  = QColor.fromRgb(  0,   0, 255)
@@ -20,10 +18,6 @@ class GeneticSnakeView(QGraphicsView):
         super(GeneticSnakeView, self).__init__()
         self._keymap = {Qt.Key_Q:      self.abortRequested,
                         Qt.Key_Escape: self.abortRequested,
-                        Qt.Key_W:      self.upRequested,
-                        Qt.Key_Up:     self.upRequested,
-                        Qt.Key_S:      self.dnRequested,
-                        Qt.Key_Down:   self.dnRequested,
                         Qt.Key_Space:  self.dpRequested}
         self._width = width   # no squares wide (i/x/m direction)
         self._height = height # no squares high (j/y/n direction)
@@ -122,7 +116,7 @@ class GeneticSnakeView(QGraphicsView):
             for i in range(1,len(s)):
                 quad = i-1,s[i-1],i,s[i] #x1,y1,x2,y2
                 l = self._line(quad,pen=p)
-                self._prevOpt.append(l)
+                self._prevTopTens.append(l)
 
     def drawDp(self, snake):
         for r in self._prevDp:

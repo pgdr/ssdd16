@@ -19,10 +19,12 @@ def printIntro():
 def main():
     height = 20
     width  = 30
-    size   = 18
-    timer  = 25 # ms sleep
-    iters  = 1  # GA iterations per update
-    poolsz = 10 # GA pool size (apx, will vary)
+    size   = 14
+    timer  = 15 # ms sleep
+
+    iters    = 1  # GA iterations per update
+    poolsz   = 80 # GA pool size (apx, will vary)
+    numlines = 80 # number of lines to draw (e.g. top 10 best individ)
 
     printIntro()
     if len(sys.argv) != 2:
@@ -35,7 +37,7 @@ def main():
     app = QApplication([])
     view = GeneticSnakeView(width, height, size)
     model = GeneticSnakeModel(width, height)
-    controller = GeneticSnakeGame(view, model, app.quit, matrix, iters, poolsz, 0.95)
+    controller = GeneticSnakeGame(view, model, app.quit, matrix, iters, poolsz, 0.98, numlines=numlines)
     controller.run(timer)
 
     app.exec_()
