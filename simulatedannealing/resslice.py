@@ -31,4 +31,23 @@ def getwall(i_slice, grid, init=None, rest=None, rest_step=5):
             wall.append(c)
     if len(wall) == 0:
         raise ValueError('Slice %d is inactive.' % i_slice)
+    return removeInactiveRows(wall)
+
+def removeInactiveRows(wall):
+    """Removes every inactive row."""
+    height = len(wall[0])
+    k = 0
+    while k < len(wall[0]):
+        val = 0
+        for i in range(len(wall)):
+            val = max(val, wall[i][k])
+        if val == 0:
+            print('Row %d inactive' % k)
+            for i in range(len(wall)):
+                wall[i] = wall[i][:k] + wall[i][k+1:]
+        else:
+            k += 1
+    dif = height - len(wall[0])
+    if dif > 0:
+        print('Removed %d rows' % dif)
     return wall
