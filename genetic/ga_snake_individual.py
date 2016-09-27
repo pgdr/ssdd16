@@ -110,7 +110,7 @@ class GeneticSnakeIndividual():
         m = GeneticSnakeIndividual(self._matrix)
         m._snake = [self._snake[i] for i in range(self._width)]
         a,b = self.__segment()
-        ud = self.__ud(2)
+        ud = self.__ud(self._height) # TODO verify that this maketh sense
         for i in range(a,b):
             m._snake[i] = self.__ysqueeze(m._snake[i] + ud)
         m.__propagateSegment(a,b)
