@@ -9,7 +9,7 @@ def soil(kw, a_idx):
         val /= 2
     return val
 
-def getwall(i, grid, init=None, rest=None, rest_step=5):
+def getwall(i_slice, grid, init=None, rest=None, rest_step=5):
     if init is None and rest is None:
         raise ValueError('At least one of init and rest must be set')
 
@@ -23,9 +23,12 @@ def getwall(i, grid, init=None, rest=None, rest_step=5):
     for j in range(ny):
         c = []
         for k in range(nz):
-            ijk = i, j, k
+            ijk = i_slice, j, k
             a = grid.get_active_index(ijk=ijk)
             val = soil(kw, a)
             c.append(val)
-        wall.append(c)
+        if max(c) > 0:
+            wall.append(c)
+    if len(wall) == 0:
+        raise ValueError('Slice %d is inactive.' % i_slice)
     return wall
