@@ -16,6 +16,11 @@ class GeneticSnakeIndividual():
             self.__freeze()
         self._genealogy = ''
 
+    def fitness(self):
+        if self._fitness is None:
+            self.__computeFitness()
+        return self._fitness
+
     def __computeFitness(self):
         s = self._snake
         try:
@@ -24,15 +29,111 @@ class GeneticSnakeIndividual():
             print(s)
             raise IndexError(str(s))
 
+    def mutate(self):
+        m = copy(self)
+        a,b = self.__segment()
+        ud = self.__ud(self._height // 3)
+        for i in range(a,b):
+            m._snake[i] = self.__ysqueeze(m._snake[i] + ud)
+        m.__propagateSegment(a,b)
+        m._genealogy = 'm(%d,%d,%d)%s' % (a,b,ud,self._genealogy)
+        m.__freeze()
+        return m
+
+    def crossover(self, other):
+        m = copy(self)
+        a,b = self.__segment()
+        m[a:b] = other._snake[a:b]
+        for i in range(a, b):
+            m._snake[i] = other._snake[i]
+        m.__propagateSegment(a,b)
+        m._genealogy = 'c(%d,%d)%s' % (a,b,self._genealogy)
+        m.__freeze()
+        return m
+
+
+
+    def __copy__(self):
+        # deep-copied unfrozen version of self
+        c = GeneticSnakeIndividual(self._matrix)
+        c._snake = [e for e in self._snake]
+        c._genealogy = self._genealogy
+        return c
+
+    def __str__(self):
+        return 'Snake: %s' % str(self._snake) # self._genealogy
+    def __len__(self):
+        return len(self._snake)
+    def __getitem__(self, idx):
+        return self._snake[idx]
+    def __eq__(self, other):
+        return self._snake == other._snake
+    def __ne__(self, other):
+        return self._snake != other._snake
+
+    def __setitem__(self, idx, val):
+        self._snake[idx] = val
+
+    def __hash__(self):
+        return hash(self._snake)
+
+    def __ysqueeze(self, y):
+        if y >= self._height:
+            return self._height-1
+        if y < 0:
+            return 0
+        return y
+
+    def __squeeze(self):
+        self.__unfreeze()
+        for i in range(self._width):
+            self._snake[i] = self.__ysqueeze(self._snake[i])
+        self.__freeze()
+
+    def __le__(self, other):
+        return self.fitness() <= other.fitness()
+    def __lt__(self, other):
+        return self.fitness() < other.fitness()
+    def __ge__(self, other):
+        return self.fitness() >= other.fitness()
+    def __gt__(self, other):
+        return self.fitness() > other.fitness()
+
     def __freeze(self):
         self._snake = tuple(self._snake)
         self.__computeFitness()
-        #assert(self.__isvalid())
 
     def __unfreeze(self):
         self._snake = list(self._snake)
         self._fitness = None
+
+
+    def __ud(self, x = 1):
+        x = abs(x)
+        if x == 0:
+            raise ValueError('Cannot accept 0')
+        ud = 0
+        while ud == 0:
+            ud = randint(-x,x)
+        return ud
+
+    def __segment(self):
+        a,b = ri(self._width),ri(self._width)
+        if a > b:
+            return b,a
+        if a == b:
+            if a == 0:
+                return a, a+1
+            if b == self._width:
+                return b-1,b
+            return a,a+1
+        return a,b
+
+    def __propagateSegment(self,a,b):
+        self.__propagateLeft(a)
+        self.__propagateRight(b-1)
         #assert(self.__isvalid())
+
 
     def __propagateLeft(self, idx):
         if idx <= 0:
@@ -74,107 +175,6 @@ class GeneticSnakeIndividual():
         return True
 
 
-    def fitness(self):
-        if self._fitness is None:
-            self.__computeFitness()
-        return self._fitness
-
-    def __ud(self, x = 1):
-        x = abs(x)
-        if x == 0:
-            raise ValueError('Cannot accept 0')
-        ud = 0
-        while ud == 0:
-            ud = randint(-x,x)
-        return ud
-
-    def __segment(self):
-        a,b = ri(self._width),ri(self._width)
-        if a > b:
-            return b,a
-        if a == b:
-            if a == 0:
-                return a, a+1
-            if b == self._width:
-                return b-1,b
-            return a,a+1
-        return a,b
-
-    def __propagateSegment(self,a,b):
-        self.__propagateLeft(a)
-        self.__propagateRight(b-1)
-        #assert(self.__isvalid())
-
-    def mutate(self):
-        #assert(self.__isvalid())
-        m = GeneticSnakeIndividual(self._matrix)
-        m._snake = [self._snake[i] for i in range(self._width)]
-        a,b = self.__segment()
-        ud = self.__ud(self._height) # TODO verify that this maketh sense
-        for i in range(a,b):
-            m._snake[i] = self.__ysqueeze(m._snake[i] + ud)
-        m.__propagateSegment(a,b)
-        m._genealogy = 'm(%d,%d,%d)%s' % (a,b,ud,self._genealogy)
-        m.__freeze()
-        return m
-
-    def crossover(self, other):
-        #assert(self.__isvalid())
-        #assert(other.__isvalid())
-        m = copy(self)
-        a,b = self.__segment()
-        for i in range(a, b):
-            m._snake[i] = other._snake[i]
-        m.__propagateSegment(a,b)
-        m._genealogy = 'c(%d,%d)%s' % (a,b,self._genealogy)
-        m.__freeze()
-        #assert(m.__isvalid())
-        return m
-
-    def __copy__(self):
-        #assert(self.__isvalid())
-        c = GeneticSnakeIndividual(self._matrix)
-        c._snake = [e for e in self._snake]
-        c._genealogy = self._genealogy
-        #assert(c.__isvalid())
-        return c
-
-    def __str__(self):
-        return 'Snake: %s' % str(self._snake) # self._genealogy
-    def __len__(self):
-        return len(self._snake)
-    def __getitem__(self, idx):
-        return self._snake[idx]
-    def __eq__(self, other):
-        return self._snake == other._snake
-    def __ne__(self, other):
-        return self._snake != other._snake
-
-    def __hash__(self):
-        return hash(self._snake)
-
-    def __ysqueeze(self, y):
-        if y >= self._height:
-            return self._height-1
-        if y < 0:
-            return 0
-        return y
-
-    def __squeeze(self):
-        self.__unfreeze()
-        for i in range(self._width):
-            self._snake[i] = self.__ysqueeze(self._snake[i])
-        self.__freeze()
-
-    def __le__(self, other):
-        return self.fitness() <= other.fitness()
-    def __lt__(self, other):
-        return self.fitness() < other.fitness()
-    def __ge__(self, other):
-        return self.fitness() >= other.fitness()
-    def __gt__(self, other):
-        return self.fitness() > other.fitness()
-
     @staticmethod
     def randomIndividual(matrix, const=False):
         width = len(matrix)
@@ -188,5 +188,4 @@ class GeneticSnakeIndividual():
             y = s._snake[i-1] + ud
             s._snake.append(s.__ysqueeze(y))
         s.__freeze()
-        #assert(s.__isvalid())
         return s

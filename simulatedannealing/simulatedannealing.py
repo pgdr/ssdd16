@@ -23,12 +23,11 @@ def printIntro():
 
 
 def main():
-    size   = 14 # drawn size of each cell
+    size   = 10 # drawn size of each cell
     timer  = 15 # ms sleep
 
-    iters    = 1  # GA iterations per update
-    poolsz   = 80 # GA pool size (apx, will vary)
-    numlines = 80 # number of lines to draw (e.g. top 10 best individ)
+    iters    = 100  # iterations per update
+    temp     = 10 # temperature
     apxratio = 0.99
 
     printIntro()
@@ -55,7 +54,7 @@ def main():
     app = QApplication([])
     view = SimulatedSnakeView(width, height, size)
     model = SimulatedSnakeModel(width, height)
-    controller = SimulatedSnakeGame(view, model, app.quit, matrix, iters, poolsz, apxratio, numlines=numlines)
+    controller = SimulatedSnakeGame(view, model, app.quit, matrix, iters, temp, apxratio)
     controller.run(timer)
 
     app.exec_()

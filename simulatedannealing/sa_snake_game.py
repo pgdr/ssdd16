@@ -11,7 +11,7 @@ from sa_dpapi import dynamicProgramming as DP
 class SimulatedSnakeGame():
 
     def __init__(self, view, model, exit_function, matrix,
-                 iterations = 100, temperature = 20, optlimit=1.0, numlines=10):
+                 iterations = 100, temperature = 20, optlimit=1.0):
         self._view = view
         self._model = model
         self._exit = exit_function
@@ -22,7 +22,6 @@ class SimulatedSnakeGame():
         self._dp = None
         self._iterations = iterations
         self._temperature = temperature
-        self._numlines = numlines # draw the top n best as lines
         self._sa = SimulatedSnakeSimulatedAnnealing(self._matrix, SimulatedSnakeIndividual.randomIndividual, temperature)
         self._best = self._sa.best()
         self._best_repeated = 0
@@ -38,8 +37,7 @@ class SimulatedSnakeGame():
 
     def __iterate(self):
         sa = self._sa
-        for i in range(self._iterations):
-            sa.iteration()
+        sa.iteration(its=self._iterations)
         b = sa.best()
         if b > self._best:
             print('Best individual: (%.2f) %s' % (b.fitness(),b))

@@ -1,7 +1,7 @@
 from math import sqrt
 class SimulatedSnakeSimulatedAnnealing():
 
-    def __init__(self, matrix, generator, temperature=100):
+    def __init__(self, matrix, generator, temperature=15):
         self._width = len(matrix)
         self._height = len(matrix[0])
         self._matrix = matrix
@@ -27,10 +27,7 @@ class SimulatedSnakeSimulatedAnnealing():
             return True
         return (old - new) < self._temperature
 
-    def iteration(self):
-        """Do one iteration of crossover and mutation.  Pool is ordered afterwards."""
-        t = self._temperature
-        
+    def __iterate(self):
         s = self._sol
         es = s.fitness() # energy old individual
 
@@ -41,6 +38,13 @@ class SimulatedSnakeSimulatedAnnealing():
 
         if self.accept(en, es):
             self._sol = n
+
+    def iteration(self, its=10):
+        """Do one iteration of crossover and mutation.  Pool is ordered afterwards."""
+        t = self._temperature
+        #print('Temperature: %.2f' % t)
+        for i in range(its):
+            self.__iterate()
         self._temperature = t / 1.005
 
     def __str__(self):
